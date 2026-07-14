@@ -11,22 +11,14 @@ Usage:
 import sys
 import argparse
 import json
-import traceback
 from pathlib import Path
-
-PROJECT_ROOT = Path(__file__).parent.resolve()
-sys.path.insert(0, str(PROJECT_ROOT))
 
 # 禁用 traceback 打印
 sys.tracebacklimit = 0
 
-def safe_import(module_name):
-    """安全导入模块，捕获所有异常"""
-    try:
-        return __import__(module_name, fromlist=[''])
-    except Exception as e:
-        print(f"[ERROR] Failed to import {module_name}: {e}")
-        sys.exit(1)
+# 添加项目根目录到 sys.path
+PROJECT_ROOT = Path(__file__).parent.resolve()
+sys.path.insert(0, str(PROJECT_ROOT))
 
 def print_banner():
     banner = """
@@ -42,10 +34,11 @@ def cmd_scan(args):
     """调用 check 模块进行扫描"""
     try:
         from check.check import main as scan_main
-    except ImportError:
-        print("[ERROR] 未找到 check 模块，请确保 check/check.py 存在")
+    except ImportError as e:
+        print(f"[ERROR] 未找到 check 模块: {e}")
+        print("请确保 check/check.py 存在且结构完整。")
         sys.exit(1)
-    # 构造 sys.argv 以复用 check 的命令行
+    # 构造 sys.argv
     sys.argv = ['check.py']
     if args.path:
         sys.argv.append(args.path)
@@ -66,19 +59,19 @@ def cmd_scan(args):
     try:
         scan_main()
     except SystemExit as e:
-        # 正常退出
         sys.exit(e.code)
     except Exception as e:
         print(f"[ERROR] 扫描失败: {e}")
-        # 不打印 traceback
         sys.exit(1)
 
 def cmd_attack(args):
     """调用 test 模块进行攻击测试"""
     try:
         from test.test import main as attack_main
-    except ImportError:
-        print("[ERROR] 未找到 test 模块，请确保 test/test.py 存在")
+    except ImportError as e:
+        print(f"[ERROR] 无法加载 test 模块: {e}")
+        print("请确保 test/ 目录结构完整，包含 test/test.py 和 test/modules/ 等。")
+        print("可参考项目文档创建 test 目录。")
         sys.exit(1)
     # 构造 sys.argv
     sys.argv = ['test.py']
@@ -101,16 +94,22 @@ def cmd_attack(args):
         sys.exit(1)
 
 def cmd_list(args):
-    """列出所有攻击模块"""
-    try:
-        from test.modules import __all__ as module_list
-    except ImportError:
-        print("[ERROR] 无法加载 test 模块")
+    """列出所有攻击模块（直接扫描文件，不依赖 __all__）"""
+    modules_dir = PROJECT_ROOT / "test" / "modules"
+    if not modules_dir.is_dir():
+        print("[ERROR] test/modules 目录不存在")
+        print("请创建 test/modules/ 目录并放入攻击模块文件（如 oauth_consent.py 等）。")
         sys.exit(1)
-    print("Available attack modules:")
-    for name in module_list:
-        print(f"  - {name}")
-    print("\nUse: keyhunter.py attack --module <name> --target ...")
+    # 收集所有 .py 文件（排除 __init__.py）
+    py_files = [f.stem for f in modules_dir.glob("*.py") if f.stem != "__init__"]
+    if not py_files:
+        print("[WARN] test/modules 目录下未找到任何模块文件")
+        print("请至少添加一个模块文件，例如 oauth_consent.py。")
+    else:
+        print("可用攻击模块列表:")
+        for name in sorted(py_files):
+            print(f"  - {name}")
+        print("\n使用方式: keyhunter.py attack --module <name> --target ...")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -162,5 +161,5 @@ if __name__ == '__main__':
         sys.exit(0)
     except Exception:
         # 全局兜底，不显示 traceback
-        print("[FATAL] 发生未预期的错误，请检查输入参数。")
+        print("[FATAL] 发生未预期的错误，请检查输入参数或查看日志。")
         sys.exit(1)

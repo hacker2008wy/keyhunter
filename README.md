@@ -1,12 +1,12 @@
-# KeyHunter - 轻量级密钥泄漏扫描器
+# KeyHunter - 轻量级密钥泄漏扫描器(内置渗透测试模块)
 
-KeyHunter 是一款基于 Python 标准库编写的密钥泄漏扫描工具，帮助开发者在代码提交前发现硬编码的 API 密钥、凭证和 Token。它零依赖、即拷即用，特别适合在 Termux、容器或受限环境中使用。
+KeyHunter 是一款基于 Python 标准库编写的密钥泄漏扫描测试工具，帮助开发者在代码提交前发现硬编码的 API 密钥、凭证和 Token。它零依赖、即拷即用，特别适合在 Termux、容器或受限环境中使用。
 
 ---
 
-# KeyHunter - Lightweight Secret Leak Scanner
+# KeyHunter - Lightweight Secret Leak Scanner（Built-in penetration testing modules）
 
-KeyHunter is a secret scanning tool written in pure Python standard library, helping developers find hardcoded API keys, credentials, and tokens before committing code. Zero dependencies, copy-and-run, especially suitable for Termux, containers, or restricted environments.
+KeyHunter is a secret scanning and testing tool written in pure Python standard library, helping developers find hardcoded API keys, credentials, and tokens before committing code. Zero dependencies, copy-and-run, especially suitable for Termux, containers, or restricted environments.
 
 ---
 

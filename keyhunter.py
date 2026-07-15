@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 KeyHunter - 统一入口（扫描 + 攻击测试）
+-------学生的第一个项目--------
+----Student's first project----
 Usage:
     python keyhunter.py scan [path] [options]
     python keyhunter.py attack [module] [options]

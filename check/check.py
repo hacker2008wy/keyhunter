@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 KeyHunter - 轻量级密钥泄漏扫描器
--------学生的第一个项目--------
-----Student's first project----
 Usage: python keyhunter.py [path] [--output json] [--extensions .py,.env] [--exclude .git,node_modules] [--patterns '{"pattern":"regex","name":"Name","severity":"HIGH"}'] [--patterns-file patterns.json]
 """
 
